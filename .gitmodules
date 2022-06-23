@@ -1,6 +1,0 @@
-[submodule "themes/my-doks-site"]
-	path = themes/my-doks-site
-	url = https://github.com/h-enk/doks-child-theme.git
-[submodule "themes/ananke"]
-	path = themes/ananke
-	url = https://github.com/theNewDynamic/gohugo-theme-ananke.git
