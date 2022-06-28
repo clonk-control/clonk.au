@@ -12,12 +12,13 @@ a pair of float switches.
 Documentation for the pumped irrigation controller is available [here](https://github.com/clonk-control/pump-control-docs/raw/main/pump_control_docs.pdf).  
 
 &nbsp;
-&nbsp;
 
 # About us
 We are a small, family business based in Perth, Western Australia.
 
 We strive to make high-quality, reliable control products for industrial systems.
+
+&nbsp;
 
 # Contact us
 For support with any of our products or to commission a custom controller:
