@@ -25,12 +25,15 @@
   </p>
   <p>
     <button onclick="request_all_data()">Request all data</button>
-    <button onclick="send_reset()">Reset controller</button>
   </p>
   <p>
     <table id="data_table">
 
     </table>
+  </p>
+  <p>
+    <button onclick="send_reset(1)">Reset</button>
+    <button style="background-color: #f44336" onclick="send_reset(2)">Factory reset</button>
   </p>
 
   <script>
@@ -176,8 +179,8 @@
         client.publish(publish_topic, '1 1 1 1 2 16 ' + ( data_items[row_id].index ) + ' 2 ' + ( value & 0xFFFF ) + ',' + ( value >>> 16 ));
       }
     }
-    function send_reset() {
-      client.publish(publish_topic, '1 1 1 1 2 16 25 1 1');
+    function send_reset(code) {
+      client.publish(publish_topic, '1 1 1 1 2 16 25 1 ' + code );
     }
 
     function update_row(message, data_items){
