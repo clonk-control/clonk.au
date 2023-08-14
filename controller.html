@@ -76,11 +76,43 @@
     const subscribe_topic = "response";
     const publish_topic = "request"
     const data_items = [
-      { name: "Hash", unit: " ", index: 1, bytes: 1, type:"num", allow_config: false },
-      { name: "Resets", unit: " ", index: 2, bytes: 1, type:"num", allow_config: false },
-      { name: "Tank volume", unit: "Litres", index: 7, bytes: 2, type:"num", allow_config: false },
-      { name: "Dam volume", unit: "Litres", index: 9, bytes: 2, type:"num", allow_config: false },
-      { name: "Time", unit: "Date", index: 77, bytes: 2, type:"time", allow_config: true },
+      { name: "Hash",           unit: " ",      index: 1, bytes: 1, type:"num", allow_config: false },
+      { name: "Resets",         unit: " ",      index: 2, bytes: 1, type:"num", allow_config: false },
+      { name: "Tank volume",    unit: "Litres", index: 7, bytes: 2, type:"num", allow_config: false },
+      { name: "Dam volume",     unit: "Litres", index: 9, bytes: 2, type:"num", allow_config: false },
+      { name: "Tank Flow Rate", unit: "kL/hr",  index: 11, bytes: 2, type:"num", allow_config: false },
+      { name: "Dam Flow Rate",  unit: "kL/hr",  index: 12, bytes: 2, type:"num", allow_config: false },
+      { name: "Winter Stop",    unit: "Date",   index: 30, bytes: 2, type:"time", allow_config: false },
+      { name: "Winter Start",   unit: "Date",   index: 32, bytes: 2, type:"time", allow_config: false },
+      { name: "Dam stop",       unit: "Min",    index: 34, bytes: 2, type:"num", allow_config: false },
+      { name: "Dam start",      unit: "Min",    index: 35, bytes: 2, type:"num", allow_config: false },
+      { name: "Time",           unit: "Date",   index: 46, bytes: 2, type:"time", allow_config: true },
+      { name: "Valve 1 vol",    unit: "Litres", index: 48, bytes: 1, type:"num",  allow_config: false },
+      { name: "Valve 1 time",   unit: "Seconds",index: 49, bytes: 1, type:"num",  allow_config: false },
+      { name: "Valve 2 vol",    unit: "Litres", index: 50, bytes: 1, type:"num",  allow_config: false },
+      { name: "Valve 2 time",   unit: "Seconds",index: 51, bytes: 1, type:"num",  allow_config: false },
+      { name: "Valve 3 vol",    unit: "Litres", index: 52, bytes: 1, type:"num",  allow_config: false },
+      { name: "Valve 3 time",   unit: "Seconds",index: 53, bytes: 1, type:"num",  allow_config: false },
+      { name: "Valve 4 vol",    unit: "Litres", index: 54, bytes: 1, type:"num",  allow_config: false },
+      { name: "Valve 4 time",   unit: "Seconds",index: 55, bytes: 1, type:"num",  allow_config: false },
+      { name: "Valve 5 vol",    unit: "Litres", index: 56, bytes: 1, type:"num",  allow_config: false },
+      { name: "Valve 5 time",   unit: "Seconds",index: 57, bytes: 1, type:"num",  allow_config: false },
+      { name: "Valve 6 vol",    unit: "Litres", index: 58, bytes: 1, type:"num",  allow_config: false },
+      { name: "Valve 6 time",   unit: "Seconds",index: 59, bytes: 1, type:"num",  allow_config: false },
+      { name: "Valve 7 vol",    unit: "Litres", index: 60, bytes: 1, type:"num",  allow_config: false },
+      { name: "Valve 7 time",   unit: "Seconds",index: 61, bytes: 1, type:"num",  allow_config: false },
+      { name: "Valve 8 vol",    unit: "Litres", index: 62, bytes: 1, type:"num",  allow_config: false },
+      { name: "Valve 8 time",   unit: "Seconds",index: 63, bytes: 1, type:"num",  allow_config: false },
+      { name: "Valve 9 vol",    unit: "Litres", index: 64, bytes: 1, type:"num",  allow_config: false },
+      { name: "Valve 9 time",   unit: "Seconds",index: 65, bytes: 1, type:"num",  allow_config: false },
+      { name: "Valve 10 vol",   unit: "Litres", index: 66, bytes: 1, type:"num",  allow_config: false },
+      { name: "Valve 10 time",  unit: "Seconds",index: 67, bytes: 1, type:"num",  allow_config: false },
+      { name: "Valve 11 vol",   unit: "Litres", index: 68, bytes: 1, type:"num",  allow_config: false },
+      { name: "Valve 11 time",  unit: "Seconds",index: 69, bytes: 1, type:"num",  allow_config: false },
+      { name: "Valve 12 vol",   unit: "Litres", index: 70, bytes: 1, type:"num",  allow_config: false },
+      { name: "Valve 12 time",  unit: "Seconds",index: 71, bytes: 1, type:"num",  allow_config: false },
+      { name: "Valve 13 vol",   unit: "Litres", index: 72, bytes: 1, type:"num",  allow_config: false },
+      { name: "Valve 13 time",  unit: "Seconds",index: 73, bytes: 1, type:"num",  allow_config: false }
     ];
 
     const table = document.getElementById("data_table");
@@ -135,7 +167,7 @@
       }
     }
     function send_reset() {
-      client.publish(publish_topic, '1 1 1 1 2 16 27 1 1');
+      client.publish(publish_topic, '1 1 1 1 2 16 25 1 1');
     }
 
     function update_row(message, data_items){
