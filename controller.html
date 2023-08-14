@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Clonk controller</title>
+  <script src="https://unpkg.com/mqtt@3.0.0/dist/mqtt.min.js"></script>
+  <style>
+    table, th, td {
+      border: 1px solid black;
+      border-collapse: collapse;
+    }
+    td:nth-child(5){
+    border-top: none;
+    border-bottom: none;
+    }
+    tr:hover {background-color: #D6EEEE;}
+  </style>
+</head>
+<body>
+  <h1>Clonk controller</h1>
+  <p>
+    <label>
+      Insert access token here:<br>
+      <input type="text" id="token" placeholder="64-char string" size="80">
+    </label>
+      <button onclick="connect()">Connect</button>
+  </p>
+  <p>
+    <button onclick="request_all_data()">Request all data</button>
+  </p>
+  <p>
+    <table id="data_table">
+
+    </table>
+  </p>
+
+  <script>
+    var client;
+    var waiting = -1;
+    function connect(){
+      console.log("Connecting...")
+      var token = document.getElementById('token').value.trim();
+      client = mqtt.connect('wss://mqtt.flespi.io:443', {
+        clientId: '58310020',
+        username: 'FlespiToken ' + token,
+        protocolVersion: 5,
+        clean: true,
+      });
+
+      client.subscribe(subscribe_topic);
+      client.subscribe(publish_topic);
+      client.on('message', function (topic, message) {
+        message = message.toString('utf8').split(' ');
+
+        console.log(topic);
+        console.log(message);
+
+        if ( topic == subscribe_topic ){
+          if ( message[1] == 'OK'){
+            if (message.length == registers + 2 ){
+              update_table(message, data_items);
+            } else if ( waiting != -1 ){
+              item = data_items[waiting];
+              if ( item.bytes == 1){
+                document.getElementById(waiting).cells[1].innerHTML = message[2];
+              } else if ( item.bytes == 2 ){
+                document.getElementById(waiting).cells[1].innerHTML = ( message[3] << 16 ) | message[2];
+              }
+              waiting = -1
+            }
+          }
+        }
+      })
+      console.log("Connected!")
+      request_all_data();
+    }
+
+    const registers = 78
+    const subscribe_topic = "response";
+    const publish_topic = "request"
+    const data_items = [
+      { name: "Hash", unit: " ", index: 1, bytes: 1, allow_config: false },
+      { name: "Resets", unit: " ", index: 2, bytes: 1, allow_config: false },
+      { name: "Tank volume", unit: "Litres", index: 7, bytes: 2, allow_config: false },
+      { name: "Dam volume", unit: "Litres", index: 9, bytes: 2, allow_config: false },
+      { name: "Time", unit: "Seconds", index: 77, bytes: 2, allow_config: true },
+    ];
+
+    const table = document.getElementById("data_table");
+    let header = table.createTHead();
+    let row = header.insertRow();
+    let cell = row.insertCell(0);
+    cell = row.insertCell(1).innerHTML = "<b>Current data</b>";
+    cell = row.insertCell(2).innerHTML = "<b>Units</b>";
+    cell = row.insertCell(3);
+    cell = row.insertCell(4);
+    cell = row.insertCell(5).innerHTML = "<b>New data</b>";
+    cell = row.insertCell(6);
+    for (let i = 0; i < data_items.length; i++) {
+      item = data_items[i];
+      let row = table.insertRow();
+      row.id = i;
+      let name = row.insertCell(0);
+      name.innerHTML = item.name;
+      row.insertCell(1);
+      let unit = row.insertCell(2);
+      unit.innerHTML = item.unit;
+      let button = row.insertCell(3);
+      button.innerHTML = "<button onclick=request_row_data()>Request this</button>";
+      row.insertCell(4);
+      if ( item.allow_config ){
+        row.insertCell(5).innerHTML = "<input type=\"text\" id=\"input\" size=\"20\">";
+        button = row.insertCell(6);
+        button.innerHTML = "<button onclick=send_row_data()>Send this</button>";
+      } else {
+        row.insertCell(5);
+        row.insertCell(6);
+      }
+    }
+
+    function request_all_data() {
+      client.publish(publish_topic, '1 1 1 1 2 3 1 ' + registers);
+    }
+    function request_row_data() {
+      let row_id = event.target.parentNode.parentNode.id;
+      client.publish(publish_topic, '1 1 1 1 2 3 ' + data_items[row_id].index + ' ' + data_items[row_id].bytes);
+      waiting = row_id;
+    }
+    function send_row_data() {
+      let row_id = event.target.parentNode.parentNode.id;
+      var value = parseInt(document.getElementById('input').value.trim());
+      if ( isNaN( value )) {
+        document.getElementById('input').value = ''
+        return
+      }
+      if ( data_items[row_id].bytes == 1){
+        client.publish(publish_topic, '1 1 1 1 2 16 ' + data_items[row_id].index + ' 1 ' + ( value & 0xFFFF ));
+      } else if ( data_items[row_id].bytes == 2){
+        client.publish(publish_topic, '1 1 1 1 2 16 ' + ( data_items[row_id].index ) + ' 2 ' + ( value & 0xFFFF ) + ',' + ( value >>> 16 ));
+      }
+    }
+
+    function update_table(message, data_items){
+      for (let i = 0; i < data_items.length; i++) {
+        item = data_items[i];
+        if ( item.bytes == 1){
+          document.getElementById("data_table").rows[i+1].cells[1].innerHTML = message[item.index + 1];
+        } else if ( item.bytes == 2 ){
+          document.getElementById("data_table").rows[i+1].cells[1].innerHTML = ( message[item.index + 2] << 16 ) | message[item.index + 1];
+        }
+      }
+    }
+  </script>
+</body>
+</html>
