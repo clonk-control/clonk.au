@@ -39,8 +39,10 @@
     function connect(){
       console.log("Connecting...")
       var token = document.getElementById('token').value.trim();
+      var clientID =  Math.floor(Math.random() * 9000000 + 100000);
+
       client = mqtt.connect('wss://mqtt.flespi.io:443', {
-        clientId: '58310020',
+        clientId: clientID,
         username: 'FlespiToken ' + token,
         protocolVersion: 5,
         clean: true,
@@ -80,7 +82,7 @@
       document.getElementById("token_input").innerHTML = "Connected!";
     }
 
-    const registers = 73
+    const registers = 73;
     const subscribe_topic = "response";
     const publish_topic = "request"
     const data_items = [
