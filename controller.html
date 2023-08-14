@@ -49,7 +49,10 @@
         protocolVersion: 5,
         clean: true,
       });
-
+      client.on('error', function (topic, message) {
+        client.end(true);
+        return
+      })
       client.subscribe(subscribe_topic);
       client.subscribe(publish_topic);
       client.on('message', function (topic, message) {
@@ -65,9 +68,12 @@
             } else if ( waiting != -1 ){
               item = data_items[waiting];
               if ( item.bytes == 1){
-                document.getElementById(waiting).cells[1].innerHTML = message[2];
+                var data = message[item.index + 1];
+                document.getElementById(waiting).cells[1].innerHTML = data;
               } else if ( item.bytes == 2 ){
-                document.getElementById(waiting).cells[1].innerHTML = ( message[3] << 16 ) | message[2];
+                var data = ( message[item.index + 2] << 16 ) | message[item.index + 1];
+                if ( item.type == "time" ){ data = new Date(data*1000).toISOString(); }
+                document.getElementById(waiting).cells[1].innerHTML = data;
               }
               waiting = -1
             }
@@ -83,11 +89,11 @@
     const subscribe_topic = "response";
     const publish_topic = "request"
     const data_items = [
-      { name: "Hash", unit: " ", index: 1, bytes: 1, allow_config: false },
-      { name: "Resets", unit: " ", index: 2, bytes: 1, allow_config: false },
-      { name: "Tank volume", unit: "Litres", index: 7, bytes: 2, allow_config: false },
-      { name: "Dam volume", unit: "Litres", index: 9, bytes: 2, allow_config: false },
-      { name: "Time", unit: "Seconds", index: 77, bytes: 2, allow_config: true },
+      { name: "Hash", unit: " ", index: 1, bytes: 1, type:"num", allow_config: false },
+      { name: "Resets", unit: " ", index: 2, bytes: 1, type:"num", allow_config: false },
+      { name: "Tank volume", unit: "Litres", index: 7, bytes: 2, type:"num", allow_config: false },
+      { name: "Dam volume", unit: "Litres", index: 9, bytes: 2, type:"num", allow_config: false },
+      { name: "Time", unit: "Date", index: 77, bytes: 2, type:"time", allow_config: true },
     ];
 
     const table = document.getElementById("data_table");
@@ -151,9 +157,12 @@
       for (let i = 0; i < data_items.length; i++) {
         item = data_items[i];
         if ( item.bytes == 1){
-          document.getElementById("data_table").rows[i+1].cells[1].innerHTML = message[item.index + 1];
+          var data = message[item.index + 1];
+          document.getElementById("data_table").rows[i+1].cells[1].innerHTML = data;
         } else if ( item.bytes == 2 ){
-          document.getElementById("data_table").rows[i+1].cells[1].innerHTML = ( message[item.index + 2] << 16 ) | message[item.index + 1];
+          var data = ( message[item.index + 2] << 16 ) | message[item.index + 1];
+          if ( item.type == "time" ){ data = new Date(data*1000).toISOString(); }
+          document.getElementById("data_table").rows[i+1].cells[1].innerHTML = data;
         }
       }
     }
