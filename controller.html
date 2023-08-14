@@ -11,10 +11,6 @@
       border: 1px solid black;
       border-collapse: collapse;
     }
-    td:nth-child(5){
-    border-top: none;
-    border-bottom: none;
-    }
     tr:hover {background-color: #D6EEEE;}
   </style>
 </head>
@@ -105,7 +101,6 @@
     cell = row.insertCell(3);
     cell = row.insertCell(4);
     cell = row.insertCell(5).innerHTML = "<b>New data</b>";
-    cell = row.insertCell(6);
     for (let i = 0; i < data_items.length; i++) {
       item = data_items[i];
       let row = table.insertRow();
