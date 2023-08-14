@@ -45,9 +45,17 @@
         protocolVersion: 5,
         clean: true,
       });
-      client.on('error', function (topic, message) {
+      client.on('error', function (error_message) {
         client.end(true);
-        return
+        document.getElementById('token_input').innerHTML =
+        `<p>
+          <label>
+            Insert access token here:<br>
+            <input type="text" id="token" placeholder="64-char string" size="80">
+          </label>
+            <button onclick="connect()">Connect</button>
+        </p>`
+        console.log(error_message);
       })
       client.subscribe(subscribe_topic);
       client.subscribe(publish_topic);
