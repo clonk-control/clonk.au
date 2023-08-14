@@ -62,16 +62,7 @@
             if (message.length == registers + 2 ){
               update_table(message, data_items);
             } else if ( waiting != -1 ){
-              item = data_items[waiting];
-              if ( item.bytes == 1){
-                var data = message[item.index + 1];
-                document.getElementById(waiting).cells[1].innerHTML = data;
-              } else if ( item.bytes == 2 ){
-                var data = ( message[item.index + 2] << 16 ) | message[item.index + 1];
-                if ( item.type == "time" ){ data = new Date(data*1000).toISOString(); }
-                document.getElementById(waiting).cells[1].innerHTML = data;
-              }
-              waiting = -1
+              update_row(message, data_items);
             }
           }
         }
@@ -145,6 +136,19 @@
     }
     function send_reset() {
       client.publish(publish_topic, '1 1 1 1 2 16 27 1 1');
+    }
+
+    function update_row(message, data_items){
+      item = data_items[waiting];
+      if ( item.bytes == 1){
+        var data = message[2];
+        document.getElementById(waiting).cells[1].innerHTML = data;
+      } else if ( item.bytes == 2 ){
+        var data = ( message[3] << 16 ) | message[2];
+        if ( item.type == "time" ){ data = new Date(data*1000).toISOString(); }
+        document.getElementById(waiting).cells[1].innerHTML = data;
+      }
+      waiting = -1
     }
 
     function update_table(message, data_items){
