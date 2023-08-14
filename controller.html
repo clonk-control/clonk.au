@@ -20,7 +20,7 @@
 </head>
 <body>
   <h1>Clonk controller</h1>
-  <p>
+  <p id="token_input">
     <label>
       Insert access token here:<br>
       <input type="text" id="token" placeholder="64-char string" size="80">
@@ -76,6 +76,7 @@
       })
       console.log("Connected!")
       request_all_data();
+      document.getElementById("token_input").innerHTML = "Connected!";
     }
 
     const registers = 78
