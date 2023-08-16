@@ -157,7 +157,7 @@
       let button = row.insertCell(3);
       button.innerHTML = "<button onclick=request_row_data()>Request this</button>";
       if ( item.allow_config ){
-        row.insertCell(4).innerHTML = "<input type=\"text\" id=\"input\" size=\"20\">";
+        row.insertCell(4).innerHTML = "<input type='text' id='input" + item.index + "' size='20'>";
         button = row.insertCell(5);
         button.innerHTML = "<button onclick=send_row_data()>Send this</button>";
       } else {
@@ -176,9 +176,10 @@
     }
     function send_row_data() {
       let row_id = event.target.parentNode.parentNode.id;
-      var value = parseInt(document.getElementById('input').value.trim());
+      var value = parseInt(document.getElementById('input' + data_items[row_id].index ).value.trim());
+      console.log(value);
       if ( isNaN( value )) {
-        document.getElementById('input').value = ''
+        document.getElementById('input').value = '';
         return
       }
       if ( data_items[row_id].bytes == 1){
