@@ -24,9 +24,6 @@
       <button onclick="connect()">Connect</button>
   </p>
   <p>
-    <button onclick="request_all_data()">Request all data</button>
-  </p>
-  <p>
     <table id="data_table">
 
     </table>
@@ -87,54 +84,72 @@
 
     const registers = 75;
     const subscribe_topic = "response";
-    const publish_topic = "request"
+    const publish_topic = "request";
     const data_items = [
-      { name: "Hash",           unit: " ",      index: 1, bytes: 1, type:"num", allow_config: false },
-      { name: "Resets",         unit: " ",      index: 2, bytes: 1, type:"num", allow_config: false },
-      { name: "Tank volume",    unit: "Litres", index: 7, bytes: 2, type:"num", allow_config: false },
-      { name: "Dam volume",     unit: "Litres", index: 9, bytes: 2, type:"num", allow_config: false },
-      { name: "Tank Flow Rate", unit: "L/hr",   index: 11, bytes: 2, type:"num", allow_config: false },
-      { name: "Dam Flow Rate",  unit: "L/hr",   index: 13, bytes: 2, type:"num", allow_config: false },
-      { name: "Winter Start",   unit: "Date",   index: 32, bytes: 2, type:"time", allow_config: true },
-      { name: "Winter Stop",    unit: "Date",   index: 34, bytes: 2, type:"time", allow_config: true },
-      { name: "Dam start",      unit: "Min",    index: 36, bytes: 1, type:"num", allow_config: true },
-      { name: "Dam stop",       unit: "Min",    index: 37, bytes: 1, type:"num", allow_config: true },
-      { name: "Tank Vol/Pulse", unit: "L/pulse",index: 38, bytes: 1, type:"num", allow_config: true },
-      { name: "Dam Vol/Pulse",  unit: "L/pulse",index: 39, bytes: 1, type:"num", allow_config: true },
-      { name: "Tank prime time",unit: "seconds",index: 40, bytes: 1, type:"num", allow_config: true },
-      { name: "Dam prime time", unit: "seconds",index: 41, bytes: 1, type:"num", allow_config: true },
-      { name: "Tank no-flow",   unit: "L/s",    index: 42, bytes: 1, type:"num", allow_config: true },
-      { name: "Dam no-flow",    unit: "L/s",    index: 43, bytes: 1, type:"num", allow_config: true },
-      { name: "Tank norm flow", unit: "L/s",    index: 44, bytes: 1, type:"num", allow_config: true },
-      { name: "Dam norm flow",  unit: "L/s",    index: 45, bytes: 1, type:"num", allow_config: true },
-      { name: "Mode",           unit: " ",      index: 46, bytes: 1, type:"num", allow_config: true },
-      { name: "Time",           unit: "Date",   index: 48, bytes: 2, type:"time", allow_config: true },
-      { name: "Valve 1 vol",    unit: "Litres", index: 50, bytes: 1, type:"num",  allow_config: true },
-      { name: "Valve 1 time",   unit: "Seconds",index: 51, bytes: 1, type:"num",  allow_config: true },
-      { name: "Valve 2 vol",    unit: "Litres", index: 52, bytes: 1, type:"num",  allow_config: true },
-      { name: "Valve 2 time",   unit: "Seconds",index: 53, bytes: 1, type:"num",  allow_config: true },
-      { name: "Valve 3 vol",    unit: "Litres", index: 54, bytes: 1, type:"num",  allow_config: true },
-      { name: "Valve 3 time",   unit: "Seconds",index: 55, bytes: 1, type:"num",  allow_config: true },
-      { name: "Valve 4 vol",    unit: "Litres", index: 56, bytes: 1, type:"num",  allow_config: true },
-      { name: "Valve 4 time",   unit: "Seconds",index: 57, bytes: 1, type:"num",  allow_config: true },
-      { name: "Valve 5 vol",    unit: "Litres", index: 58, bytes: 1, type:"num",  allow_config: true },
-      { name: "Valve 5 time",   unit: "Seconds",index: 59, bytes: 1, type:"num",  allow_config: true },
-      { name: "Valve 6 vol",    unit: "Litres", index: 60, bytes: 1, type:"num",  allow_config: true },
-      { name: "Valve 6 time",   unit: "Seconds",index: 61, bytes: 1, type:"num",  allow_config: true },
-      { name: "Valve 7 vol",    unit: "Litres", index: 62, bytes: 1, type:"num",  allow_config: true },
-      { name: "Valve 7 time",   unit: "Seconds",index: 63, bytes: 1, type:"num",  allow_config: true },
-      { name: "Valve 8 vol",    unit: "Litres", index: 64, bytes: 1, type:"num",  allow_config: true },
-      { name: "Valve 8 time",   unit: "Seconds",index: 65, bytes: 1, type:"num",  allow_config: true },
-      { name: "Valve 9 vol",    unit: "Litres", index: 66, bytes: 1, type:"num",  allow_config: true },
-      { name: "Valve 9 time",   unit: "Seconds",index: 67, bytes: 1, type:"num",  allow_config: true },
-      { name: "Valve 10 vol",   unit: "Litres", index: 68, bytes: 1, type:"num",  allow_config: true },
-      { name: "Valve 10 time",  unit: "Seconds",index: 69, bytes: 1, type:"num",  allow_config: true },
-      { name: "Valve 11 vol",   unit: "Litres", index: 70, bytes: 1, type:"num",  allow_config: true },
-      { name: "Valve 11 time",  unit: "Seconds",index: 71, bytes: 1, type:"num",  allow_config: true },
-      { name: "Valve 12 vol",   unit: "Litres", index: 72, bytes: 1, type:"num",  allow_config: true },
-      { name: "Valve 12 time",  unit: "Seconds",index: 73, bytes: 1, type:"num",  allow_config: true },
-      { name: "Valve 13 vol",   unit: "Litres", index: 74, bytes: 1, type:"num",  allow_config: true },
-      { name: "Valve 13 time",  unit: "Seconds",index: 75, bytes: 1, type:"num",  allow_config: true }
+      { name: "Hash",           unit: " ",      index: 1,  bytes: 1, type:"num", readable: true, writeable: false },
+      { name: "Resets",         unit: " ",      index: 2,  bytes: 1, type:"num", readable: true, writeable: false },
+      { name: "Tank volume",    unit: "Litres", index: 7,  bytes: 2, type:"num", readable: true, writeable: false },
+      { name: "Dam volume",     unit: "Litres", index: 9,  bytes: 2, type:"num", readable: true, writeable: false },
+      { name: "Tank Flow Rate", unit: "L/hr",   index: 11,  bytes: 2, type:"num", readable: true, writeable: false },
+      { name: "Dam Flow Rate",  unit: "L/hr",   index: 13,  bytes: 2, type:"num", readable: true, writeable: false },
+      { name: "High flow",      unit: " ",      index: 14,  bytes: 1, type:"num", readable: true, writeable: false },
+      { name: "Low flow",       unit: " ",      index: 15,  bytes: 1, type:"num", readable: true, writeable: false },
+      { name: "Allocated",      unit: " ",      index: 16,  bytes: 1, type:"num", readable: true, writeable: false },
+      { name: "Tank state",     unit: " ",      index: 17,  bytes: 1, type:"num", readable: true, writeable: false },
+      { name: "Dam state",      unit: " ",      index: 18,  bytes: 1, type:"num", readable: true, writeable: false },
+      { name: "Winter",         unit: " ",      index: 19,  bytes: 1, type:"num", readable: true, writeable: false },
+      { name: "RTC flags",      unit: " ",      index: 20,  bytes: 1, type:"num", readable: true, writeable: false },
+      { name: "Temperature",    unit: "deg C",  index: 21,  bytes: 1, type:"num", readable: true, writeable: false },
+      { name: "Manual request", unit: " ",      index: 88,  bytes: 1, type:"num", readable: false, writeable: true },
+      { name: "Set all volume", unit: " ",      index: 89,  bytes: 1, type:"num", readable: false, writeable: true },
+      { name: "Set all time",   unit: " ",      index: 90,  bytes: 1, type:"num", readable: false, writeable: true },
+      { name: "Master valve",   unit: " ",      index: 92,  bytes: 1, type:"num", readable: true, writeable: true },
+      { name: "Modbus address", unit: " ",      index: 94,  bytes: 1, type:"num", readable: true, writeable: false },
+      { name: "Modbus baud",    unit: " ",      index: 95,  bytes: 1, type:"num", readable: true, writeable: false },
+      { name: "Winter Start",   unit: "Date",   index: 97,  bytes: 2, type:"time", readable: true, writeable: true },
+      { name: "Winter Stop",    unit: "Date",   index: 99,  bytes: 2, type:"time", readable: true, writeable: true },
+      { name: "Dam start",      unit: "Min",    index: 100, bytes: 1, type:"num", readable: true, writeable: true },
+      { name: "Dam stop",       unit: "Min",    index: 101, bytes: 1, type:"num", readable: true, writeable: true },
+      { name: "Tank Vol/Pulse", unit: "L/pulse",index: 102, bytes: 1, type:"num", readable: true, writeable: true },
+      { name: "Dam Vol/Pulse",  unit: "L/pulse",index: 103, bytes: 1, type:"num", readable: true, writeable: true },
+      { name: "Tank prime time",unit: "seconds",index: 104, bytes: 1, type:"num", readable: true, writeable: true },
+      { name: "Dam prime time", unit: "seconds",index: 105, bytes: 1, type:"num", readable: true, writeable: true },
+      { name: "Tank no-flow",   unit: "L/s",    index: 106, bytes: 1, type:"num", readable: true, writeable: true },
+      { name: "Dam no-flow",    unit: "L/s",    index: 107, bytes: 1, type:"num", readable: true, writeable: true },
+      { name: "Tank norm flow", unit: "L/s",    index: 108, bytes: 1, type:"num", readable: true, writeable: true },
+      { name: "Dam norm flow",  unit: "L/s",    index: 109, bytes: 1, type:"num", readable: true, writeable: true },
+      { name: "Dam vol alloc",  unit: "L",      index: 111, bytes: 2, type:"num", readable: true, writeable: true },
+      { name: "Dam use volume", unit: " ",      index: 112, bytes: 1, type:"num", readable: true, writeable: true },
+      { name: "Control flags",  unit: " ",      index: 113, bytes: 1, type:"num", readable: true, writeable: true },
+      { name: "Control mode",   unit: " ",      index: 114, bytes: 1, type:"num", readable: true, writeable: true },
+      { name: "Valve 1 vol",    unit: "Litres", index: 115, bytes: 1, type:"num",  readable: true, writeable: true },
+      { name: "Valve 2 vol",    unit: "Litres", index: 116, bytes: 1, type:"num",  readable: true, writeable: true },
+      { name: "Valve 3 vol",    unit: "Litres", index: 117, bytes: 1, type:"num",  readable: true, writeable: true },
+      { name: "Valve 4 vol",    unit: "Litres", index: 118, bytes: 1, type:"num",  readable: true, writeable: true },
+      { name: "Valve 5 vol",    unit: "Litres", index: 119, bytes: 1, type:"num",  readable: true, writeable: true },
+      { name: "Valve 6 vol",    unit: "Litres", index: 120, bytes: 1, type:"num",  readable: true, writeable: true },
+      { name: "Valve 7 vol",    unit: "Litres", index: 121, bytes: 1, type:"num",  readable: true, writeable: true },
+      { name: "Valve 8 vol",    unit: "Litres", index: 122, bytes: 1, type:"num",  readable: true, writeable: true },
+      { name: "Valve 9 vol",    unit: "Litres", index: 123, bytes: 1, type:"num",  readable: true, writeable: true },
+      { name: "Valve 10 vol",   unit: "Litres", index: 124, bytes: 1, type:"num",  readable: true, writeable: true },
+      { name: "Valve 11 vol",   unit: "Litres", index: 125, bytes: 1, type:"num",  readable: true, writeable: true },
+      { name: "Valve 12 vol",   unit: "Litres", index: 126, bytes: 1, type:"num",  readable: true, writeable: true },
+      { name: "Valve 13 vol",   unit: "Litres", index: 127, bytes: 1, type:"num",  readable: true, writeable: true },
+      { name: "Valve 1 time",   unit: "Seconds",index: 128, bytes: 1, type:"num",  readable: true, writeable: true },
+      { name: "Valve 2 time",   unit: "Seconds",index: 129, bytes: 1, type:"num",  readable: true, writeable: true },
+      { name: "Valve 3 time",   unit: "Seconds",index: 130, bytes: 1, type:"num",  readable: true, writeable: true },
+      { name: "Valve 4 time",   unit: "Seconds",index: 131, bytes: 1, type:"num",  readable: true, writeable: true },
+      { name: "Valve 5 time",   unit: "Seconds",index: 132, bytes: 1, type:"num",  readable: true, writeable: true },
+      { name: "Valve 6 time",   unit: "Seconds",index: 133, bytes: 1, type:"num",  readable: true, writeable: true },
+      { name: "Valve 7 time",   unit: "Seconds",index: 134, bytes: 1, type:"num",  readable: true, writeable: true },
+      { name: "Valve 8 time",   unit: "Seconds",index: 135, bytes: 1, type:"num",  readable: true, writeable: true },
+      { name: "Valve 9 time",   unit: "Seconds",index: 136, bytes: 1, type:"num",  readable: true, writeable: true },
+      { name: "Valve 10 time",  unit: "Seconds",index: 137, bytes: 1, type:"num",  readable: true, writeable: true },
+      { name: "Valve 11 time",  unit: "Seconds",index: 138, bytes: 1, type:"num",  readable: true, writeable: true },
+      { name: "Valve 12 time",  unit: "Seconds",index: 139, bytes: 1, type:"num",  readable: true, writeable: true },
+      { name: "Valve 13 time",  unit: "Seconds",index: 140, bytes: 1, type:"num",  readable: true, writeable: true },
+      { name: "Num valves",     unit: " ",      index: 141, bytes: 1, type:"num",  readable: true, writeable: true },
+      { name: "Time",           unit: "Date",   index: 145, bytes: 2, type:"time", readable: true, writeable: true }
     ];
 
     const table = document.getElementById("data_table");
@@ -156,8 +171,10 @@
       let unit = row.insertCell(2);
       unit.innerHTML = item.unit;
       let button = row.insertCell(3);
-      button.innerHTML = "<button onclick=request_row_data()>Request this</button>";
-      if ( item.allow_config ){
+      if ( item.readable ){
+        button.innerHTML = "<button onclick=request_row_data()>Request this</button>";
+      }
+      if ( item.writeable ){
         row.insertCell(4).innerHTML = "<input type='text' id='input" + item.index + "' size='20'>";
         button = row.insertCell(5);
         button.innerHTML = "<button onclick=send_row_data()>Send this</button>";
@@ -189,10 +206,9 @@
         client.publish(publish_topic, '1 1 1 1 2 16 ' + ( data_items[row_id].index ) + ' 2 ' + ( value & 0xFFFF ) + ',' + ( value >>> 16 ));
       }
     }
-    function send_reset(code) {
-      client.publish(publish_topic, '1 1 1 1 2 16 27 1 ' + code );
+    function send_reset( code ) {
+      client.publish(publish_topic, '1 1 1 1 2 16 91 1 ' + code );
     }
-
     function update_row(message, data_items){
       item = data_items[waiting];
       if ( item.bytes == 1){
