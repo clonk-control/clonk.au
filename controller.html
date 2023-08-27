@@ -92,15 +92,15 @@
       { name: "Dam volume",     unit: "Litres", index: 9,  bytes: 2, type:"num", readable: true, writeable: false },
       { name: "Tank Flow Rate", unit: "L/hr",   index: 11,  bytes: 2, type:"num", readable: true, writeable: false },
       { name: "Dam Flow Rate",  unit: "L/hr",   index: 13,  bytes: 2, type:"num", readable: true, writeable: false },
-      { name: "High flow",      unit: " ",      index: 14,  bytes: 1, type:"num", readable: true, writeable: false },
-      { name: "Low flow",       unit: " ",      index: 15,  bytes: 1, type:"num", readable: true, writeable: false },
-      { name: "Allocated",      unit: " ",      index: 16,  bytes: 1, type:"num", readable: true, writeable: false },
-      { name: "Tank state",     unit: " ",      index: 17,  bytes: 1, type:"num", readable: true, writeable: false },
-      { name: "Dam state",      unit: " ",      index: 18,  bytes: 1, type:"num", readable: true, writeable: false },
+      { name: "High flow",      unit: " ",      index: 14,  bytes: 1, type:"bin", readable: true, writeable: false },
+      { name: "Low flow",       unit: " ",      index: 15,  bytes: 1, type:"bin", readable: true, writeable: false },
+      { name: "Allocated",      unit: " ",      index: 16,  bytes: 1, type:"bin", readable: true, writeable: false },
+      { name: "Tank state",     unit: " ",      index: 17,  bytes: 1, type:"bin", readable: true, writeable: false },
+      { name: "Dam state",      unit: " ",      index: 18,  bytes: 1, type:"bin", readable: true, writeable: false },
       { name: "Winter",         unit: " ",      index: 19,  bytes: 1, type:"num", readable: true, writeable: false },
       { name: "RTC flags",      unit: " ",      index: 20,  bytes: 1, type:"num", readable: true, writeable: false },
       { name: "Temperature",    unit: "deg C",  index: 21,  bytes: 1, type:"num", readable: true, writeable: false },
-      { name: "Manual request", unit: " ",      index: 88,  bytes: 1, type:"num", readable: false, writeable: true },
+      { name: "Manual request", unit: " ",      index: 88,  bytes: 1, type:"bin", readable: false, writeable: true },
       { name: "Set all volume", unit: " ",      index: 89,  bytes: 1, type:"num", readable: false, writeable: true },
       { name: "Set all time",   unit: " ",      index: 90,  bytes: 1, type:"num", readable: false, writeable: true },
       { name: "Master valve",   unit: " ",      index: 92,  bytes: 1, type:"num", readable: true, writeable: true },
@@ -120,7 +120,7 @@
       { name: "Dam norm flow",  unit: "L/s",    index: 109, bytes: 1, type:"num", readable: true, writeable: true },
       { name: "Dam vol alloc",  unit: "L",      index: 111, bytes: 2, type:"num", readable: true, writeable: true },
       { name: "Dam use volume", unit: " ",      index: 112, bytes: 1, type:"num", readable: true, writeable: true },
-      { name: "Control flags",  unit: " ",      index: 113, bytes: 1, type:"num", readable: true, writeable: true },
+      { name: "Control flags",  unit: " ",      index: 113, bytes: 1, type:"bin", readable: true, writeable: true },
       { name: "Control mode",   unit: " ",      index: 114, bytes: 1, type:"num", readable: true, writeable: true },
       { name: "Valve 1 vol",    unit: "Litres", index: 115, bytes: 1, type:"num",  readable: true, writeable: true },
       { name: "Valve 2 vol",    unit: "Litres", index: 116, bytes: 1, type:"num",  readable: true, writeable: true },
@@ -194,7 +194,13 @@
     }
     function send_row_data() {
       let row_id = event.target.parentNode.parentNode.id;
-      var value = parseInt(document.getElementById('input' + data_items[row_id].index ).value.trim());
+      var value;
+      if ( data_items[row_id].type == "bin" ){
+        value = parseInt(document.getElementById('input' + data_items[row_id].index ).value.trim(), 2);
+        console.log(value);
+      } else {
+        value = parseInt(document.getElementById('input' + data_items[row_id].index ).value.trim());
+      }
       console.log(value);
       if ( isNaN( value )) {
         document.getElementById('input').value = '';
@@ -214,6 +220,7 @@
       if ( item.bytes == 1){
         var data = message[2];
         document.getElementById(waiting).cells[1].innerHTML = data;
+        if ( item.type == "bin" ){ data = (data >>> 0).toString(2); } // Bit shift right to force unsigned int
       } else if ( item.bytes == 2 ){
         var data = ( message[3] << 16 ) | message[2];
         if ( item.type == "time" ){ data = new Date(data*1000).toISOString(); }
